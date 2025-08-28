@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übung 2: Daten im HTML anzeigen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #dc143c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #f8f9fa;
+            border-left: 5px solid #dc143c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #dc143c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(145deg, #dc143c, #b91c3c);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(220, 20, 60, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .pokemon-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #dc143c;
+            display: none;
+        }
+
+        .pokemon-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pokemon-name {
+            font-size: 2.5em;
+            color: #dc143c;
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pokemon-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #dc143c;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .hinweis {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>📊 Übung 2: Daten im HTML anzeigen</h1>
+        
+        <div class="aufgabe">
+            <h2>📋 Aufgabe</h2>
+            <p>Jetzt zeigen wir die Pokémon-Daten nicht nur in der Konsole, sondern auch auf der Webseite an:</p>
+            <ul>
+                <li>Gleicher <code>fetch()</code> Aufruf wie in Übung 1</li>
+                <li>Extrahiere spezifische Daten: Name, ID, Größe, Gewicht</li>
+                <li>Zeige diese Daten im HTML mit <code>textContent</code> an</li>
+                <li>Verwende schöne Karten-Darstellung</li>
+            </ul>
+        </div>
+
+        <div class="button-container">
+            <button onclick="loadAndDisplayPokemon()">Pokémon laden & anzeigen</button>
+        </div>
+
+        <div id="pokemonCard" class="pokemon-card">
+            <div class="pokemon-name" id="pokemonName">-</div>
+            <div class="pokemon-info">
+                <div class="info-item">
+                    <span class="info-label">ID</span>
+                    <div class="info-value" id="pokemonId">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Größe</span>
+                    <div class="info-value" id="pokemonHeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gewicht</span>
+                    <div class="info-value" id="pokemonWeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Erfahrung</span>
+                    <div class="info-value" id="pokemonExp">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was ist neu?</h3>
+            <p>Anstatt nur <code>console.log()</code> zu verwenden, nutzen wir jetzt <code>document.getElementById()</code> und <code>textContent</code>, um die Daten direkt im HTML anzuzeigen. Die Pokémon-Karte wird dynamisch mit echten Daten gefüllt!</p>
+        </div>
+
+        <div class="hinweis">
+            <h3>🔍 Nächste Schritte</h3>
+            <p>In Übung 3 werden wir das Pokémon-Bild hinzufügen, um die Darstellung noch ansprechender zu machen.</p>
+        </div>
+
+        <a href="2-aufgabe.html" class="loesung-link" style="background: #6c757d;">🔙 Zurück zur Aufgabe</a>
+    </main>
+
+    <script>
+        // Funktion zum Laden und Anzeigen des ersten Pokémons
+        function loadAndDisplayPokemon() {
+            console.log('🚀 Lade Pokémon-Daten...');
+            
+            // Fetch das erste Pokémon von der API
+            fetch('https://pokeapi.co/api/v2/pokemon/1')
+                .then(response => {
+                    console.log('📡 Antwort erhalten');
+                    return response.json(); // JSON-Daten extrahieren
+                })
+                .then(pokemon => {
+                    console.log('📊 Pokémon-Daten:', pokemon);
+                    
+                    // Daten aus dem JSON-Objekt extrahieren und im HTML anzeigen
+                    document.getElementById('pokemonName').textContent = pokemon.name;
+                    document.getElementById('pokemonId').textContent = '#' + pokemon.id;
+                    
+                    // Größe von Dezimetern in Meter umwandeln
+                    document.getElementById('pokemonHeight').textContent = (pokemon.height / 10) + 'm';
+                    
+                    // Gewicht von Hektogramm in Kilogramm umwandeln  
+                    document.getElementById('pokemonWeight').textContent = (pokemon.weight / 10) + 'kg';
+                    
+                    // Basis-Erfahrung anzeigen
+                    document.getElementById('pokemonExp').textContent = pokemon.base_experience + ' XP';
+                    
+                    // Pokémon-Karte sichtbar machen
+                    document.getElementById('pokemonCard').classList.add('show');
+                    
+                    console.log('✅ Daten erfolgreich angezeigt!');
+                });
+        }
+    </script>
+</body>
+</html>

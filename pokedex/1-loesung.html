@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übung 1: Erstes Pokémon abrufen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #dc143c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #f8f9fa;
+            border-left: 5px solid #dc143c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #dc143c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(145deg, #dc143c, #b91c3c);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(220, 20, 60, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .hinweis {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>🔥 Übung 1: Erstes Pokémon abrufen</h1>
+        
+        <div class="aufgabe">
+            <h2>📋 Aufgabe</h2>
+            <p>In dieser ersten Übung lernst du:</p>
+            <ul>
+                <li>Einen einfachen <code>fetch()</code> Aufruf zur PokéAPI zu machen</li>
+                <li>Das komplette JSON-Ergebnis in der Konsole anzuzeigen</li>
+                <li>Die Grundlagen von Promises mit <code>.then()</code></li>
+            </ul>
+            <p><strong>Wichtig:</strong> Öffne die Entwicklertools (F12) und schaue in die Konsole!</p>
+        </div>
+
+        <div class="button-container">
+            <button onclick="loadPokemon()">Pokémon laden</button>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was passiert?</h3>
+            <p>Wenn du auf den Button klickst, wird das erste Pokémon (Bisasam/Bulbasaur) von der API geladen und das komplette JSON-Objekt in der Konsole ausgegeben. Schaue dir alle verfügbaren Daten an!</p>
+        </div>
+
+        <div class="hinweis">
+            <h3>🔍 Nächste Schritte</h3>
+            <p>In der nächsten Übung werden wir spezifische Daten aus diesem JSON-Objekt extrahieren und auf der Webseite anzeigen, anstatt nur in der Konsole.</p>
+        </div>
+
+        <a href="1-aufgabe.html" class="loesung-link" style="background: #6c757d;">🔙 Zurück zur Aufgabe</a>
+    </main>
+
+    <script>
+        // Funktion zum Laden des ersten Pokémons
+        function loadPokemon() {
+            console.log('🚀 Starte API-Aufruf...');
+            
+            // Einfacher fetch() zur PokéAPI - laden des ersten Pokémons (ID: 1)
+            fetch('https://pokeapi.co/api/v2/pokemon/1')
+                .then(response => {
+                    console.log('📡 Antwort erhalten:', response);
+                    return response.json(); // JSON-Daten aus der Antwort extrahieren
+                })
+                .then(pokemon => {
+                    console.log('🎉 Pokémon-Daten erhalten!');
+                    console.log('📊 Komplettes Pokémon-Objekt:', pokemon);
+                    console.log('📝 Name:', pokemon.name);
+                    console.log('🆔 ID:', pokemon.id);
+                    console.log('📏 Größe:', pokemon.height);
+                    console.log('⚖️ Gewicht:', pokemon.weight);
+                });
+        }
+    </script>
+</body>
+</html>

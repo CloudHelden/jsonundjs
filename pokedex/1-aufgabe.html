@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe 1: Erstes Pokémon abrufen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a90e2 0%, #5c7cfa 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #e3f2fd;
+            border-left: 5px solid #4a90e2;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .schritte {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .schritte h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .schritt {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .hinweis {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .loesung-link {
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .loesung-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .todo {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .todo strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>📚 Aufgabe 1: Erstes Pokémon abrufen</h1>
+        
+        <div class="aufgabe">
+            <h2>🎯 Deine Aufgabe</h2>
+            <p><strong>Ziel:</strong> Du lernst, wie man eine API anruft und Daten in der Konsole anzeigt.</p>
+            <p>Die PokéAPI (https://pokeapi.co) ist eine kostenlose API für Pokémon-Daten. Wir werden das erste Pokémon (Bisasam) laden!</p>
+        </div>
+
+        <div class="schritte">
+            <h3>📋 Schritt-für-Schritt Anleitung</h3>
+            
+            <div class="schritt">
+                <strong>Schritt 1:</strong> Öffne die Entwicklertools (F12) und gehe zur Konsole
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 2:</strong> Vervollständige die <code>loadPokemon()</code> Funktion unten
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 3:</strong> Verwende <code>fetch()</code> um Daten von der API zu holen
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 4:</strong> Zeige die Pokémon-Daten in der Konsole an
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 5:</strong> Teste deinen Code mit dem Button!
+            </div>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was du wissen musst:</h3>
+            <p><strong>fetch():</strong> Lädt Daten von einer URL</p>
+            <p><strong>.then():</strong> Wird ausgeführt wenn die Daten ankommen</p>
+            <p><strong>response.json():</strong> Konvertiert die Antwort zu JavaScript-Objekt</p>
+            <p><strong>console.log():</strong> Zeigt Daten in der Konsole an</p>
+        </div>
+
+        <div class="button-container">
+            <button onclick="loadPokemon()">🚀 Pokémon laden</button>
+        </div>
+
+        <div class="todo">
+            <strong>TODO:</strong> Vervollständige die Funktion unten! Folge den Kommentaren.
+        </div>
+
+        <a href="1-loesung.html" class="loesung-link">🔍 Zur Lösung (falls du nicht weiterkommst)</a>
+    </main>
+
+    <script>
+        // 🎯 DEINE AUFGABE: Vervollständige diese Funktion!
+        function loadPokemon() {
+            console.log('🚀 Starte API-Aufruf...');
+            
+            // TODO 1: Verwende fetch() um das erste Pokémon zu laden
+            // Die URL ist: 'https://pokeapi.co/api/v2/pokemon/1'
+            // 
+            // fetch('___HIER_DIE_URL_EINFÜGEN___')
+            //     .then(response => {
+            //         console.log('📡 Antwort erhalten:', response);
+            //         // TODO 2: Gib response.json() zurück
+            //         return response.___HIER_JSON_METHOD___;
+            //     })
+            //     .then(pokemon => {
+            //         // TODO 3: Zeige das komplette Pokémon-Objekt in der Konsole
+            //         console.log('🎉 Pokémon-Daten erhalten!');
+            //         console.log('📊 Komplettes Pokémon-Objekt:', ___HIER_POKEMON_VARIABLE___);
+            //         
+            //         // BONUS: Zeige auch einzelne Eigenschaften
+            //         console.log('📝 Name:', pokemon.name);
+            //         console.log('🆔 ID:', pokemon.id);
+            //         console.log('📏 Größe:', pokemon.height);
+            //         console.log('⚖️ Gewicht:', pokemon.weight);
+            //     });
+            
+            // 💡 TIPP: Entferne die Kommentar-Zeichen (//) und fülle die Lücken aus!
+            // 💡 TIPP: Schaue in der Konsole (F12) was passiert!
+        }
+        
+        // 🎓 LERNZIEL: Nach dieser Übung verstehst du:
+        // - Wie fetch() funktioniert
+        // - Was .then() macht
+        // - Wie man JSON-Daten verarbeitet
+        // - Wie man die Konsole für Debugging nutzt
+    </script>
+</body>
+</html>

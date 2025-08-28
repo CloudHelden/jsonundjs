@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe 2: Daten im HTML anzeigen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a90e2 0%, #5c7cfa 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #e3f2fd;
+            border-left: 5px solid #4a90e2;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .schritte {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .schritte h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .schritt {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .pokemon-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #4a90e2;
+            display: none;
+        }
+
+        .pokemon-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pokemon-name {
+            font-size: 2.5em;
+            color: #4a90e2;
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pokemon-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #4a90e2;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .hinweis {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .loesung-link {
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .loesung-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        .todo {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .todo strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>📊 Aufgabe 2: Daten im HTML anzeigen</h1>
+        
+        <div class="aufgabe">
+            <h2>🎯 Deine Aufgabe</h2>
+            <p><strong>Ziel:</strong> Zeige die Pokémon-Daten nicht nur in der Konsole, sondern auch schön formatiert auf der Webseite an!</p>
+            <p>Du baust auf Aufgabe 1 auf und lernst, wie man Daten in HTML-Elementen anzeigt.</p>
+        </div>
+
+        <div class="schritte">
+            <h3>📋 Schritt-für-Schritt Anleitung</h3>
+            
+            <div class="schritt">
+                <strong>Schritt 1:</strong> Der fetch() ist bereits vorbereitet (wie in Aufgabe 1)
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 2:</strong> Verwende <code>document.getElementById()</code> um HTML-Elemente zu finden
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 3:</strong> Setze <code>textContent</code> der Elemente auf die Pokémon-Daten
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 4:</strong> Zeige die Pokémon-Karte mit <code>classList.add('show')</code>
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 5:</strong> Teste deinen Code und bewundere das Ergebnis!
+            </div>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was du wissen musst:</h3>
+            <p><strong>document.getElementById():</strong> Findet ein HTML-Element mit einer bestimmten ID</p>
+            <p><strong>textContent:</strong> Setzt den Text eines HTML-Elements</p>
+            <p><strong>classList.add():</strong> Fügt eine CSS-Klasse zu einem Element hinzu</p>
+        </div>
+
+        <div class="button-container">
+            <button onclick="loadAndDisplayPokemon()">📊 Pokémon laden & anzeigen</button>
+        </div>
+
+        <div class="todo">
+            <strong>TODO:</strong> Vervollständige die displayPokemon() Funktion!
+        </div>
+
+        <div id="pokemonCard" class="pokemon-card">
+            <div class="pokemon-name" id="pokemonName">-</div>
+            <div class="pokemon-info">
+                <div class="info-item">
+                    <span class="info-label">ID</span>
+                    <div class="info-value" id="pokemonId">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Größe</span>
+                    <div class="info-value" id="pokemonHeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gewicht</span>
+                    <div class="info-value" id="pokemonWeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Erfahrung</span>
+                    <div class="info-value" id="pokemonExp">-</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="2-loesung.html" class="loesung-link">🔍 Zur Lösung</a>
+    </main>
+
+    <script>
+        // Diese Funktion ist bereits fertig - sie lädt das Pokémon wie in Aufgabe 1
+        function loadAndDisplayPokemon() {
+            console.log('🚀 Lade Pokémon-Daten...');
+            
+            fetch('https://pokeapi.co/api/v2/pokemon/1')
+                .then(response => {
+                    console.log('📡 Antwort erhalten');
+                    return response.json();
+                })
+                .then(pokemon => {
+                    console.log('📊 Pokémon-Daten:', pokemon);
+                    
+                    // 🎯 HIER IST DEINE AUFGABE: Rufe deine displayPokemon Funktion auf
+                    displayPokemon(pokemon);
+                });
+        }
+        
+        // 🎯 DEINE HAUPTAUFGABE: Vervollständige diese Funktion!
+        function displayPokemon(pokemon) {
+            console.log('🎨 Zeige Pokémon-Daten an...');
+            
+            // TODO 1: Pokémon-Name anzeigen
+            // Tipp: document.getElementById('pokemonName').textContent = pokemon.name;
+            // ___HIER_CODE_EINFÜGEN___
+            
+            // TODO 2: Pokémon-ID anzeigen (mit # davor)
+            // Tipp: document.getElementById('pokemonId').textContent = '#' + pokemon.id;
+            // ___HIER_CODE_EINFÜGEN___
+            
+            // TODO 3: Pokémon-Größe anzeigen (height / 10 für Meter)
+            // Tipp: document.getElementById('pokemonHeight').textContent = (pokemon.height / 10) + 'm';
+            // ___HIER_CODE_EINFÜGEN___
+            
+            // TODO 4: Pokémon-Gewicht anzeigen (weight / 10 für Kilogramm)
+            // Tipp: document.getElementById('pokemonWeight').textContent = (pokemon.weight / 10) + 'kg';
+            // ___HIER_CODE_EINFÜGEN___
+            
+            // TODO 5: Basis-Erfahrung anzeigen
+            // Tipp: document.getElementById('pokemonExp').textContent = pokemon.base_experience + ' XP';
+            // ___HIER_CODE_EINFÜGEN___
+            
+            // TODO 6: Pokémon-Karte sichtbar machen
+            // Tipp: document.getElementById('pokemonCard').classList.add('show');
+            // ___HIER_CODE_EINFÜGEN___
+            
+            console.log('✅ Pokémon erfolgreich angezeigt!');
+        }
+        
+        // 🎓 LERNZIEL: Nach dieser Übung verstehst du:
+        // - Wie man HTML-Elemente mit JavaScript findet
+        // - Wie man Text in HTML-Elementen ändert
+        // - Wie man CSS-Klassen zu Elementen hinzufügt
+        // - Wie man Daten formatiert (z.B. Einheiten hinzufügen)
+    </script>
+</body>
+</html>

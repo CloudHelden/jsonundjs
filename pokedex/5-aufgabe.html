@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufgabe 5: Suchfunktion mit Error-Handling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #4a90e2 0%, #5c7cfa 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #e3f2fd;
+            border-left: 5px solid #4a90e2;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #4a90e2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .schritte {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .schritte h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .schritt {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #4a90e2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+        }
+
+        .search-button {
+            width: 100%;
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .pokemon-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #4a90e2;
+            display: none;
+        }
+
+        .pokemon-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pokemon-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .pokemon-image {
+            background: radial-gradient(circle, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 3px solid #4a90e2;
+        }
+
+        .pokemon-image img {
+            width: 150px;
+            height: 150px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+        }
+
+        .pokemon-name {
+            font-size: 2.5em;
+            color: #4a90e2;
+            font-weight: bold;
+            text-transform: capitalize;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pokemon-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #4a90e2;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .error-message {
+            background: linear-gradient(145deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .hinweis {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .loesung-link {
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .loesung-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .examples {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .examples h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .examples p {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        .todo {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .todo strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>🔍 Aufgabe 5: Suchfunktion mit Error-Handling</h1>
+        
+        <div class="aufgabe">
+            <h2>🎯 Deine Aufgabe</h2>
+            <p><strong>Ziel:</strong> Erstelle eine interaktive Suchfunktion und lerne dabei Error-Handling!</p>
+            <p>Du baust eine echte Pokédex-Suchfunktion, die auch mit Fehlern umgehen kann (z.B. wenn ein Pokémon nicht gefunden wird).</p>
+        </div>
+
+        <div class="schritte">
+            <h3>📋 Schritt-für-Schritt Anleitung</h3>
+            
+            <div class="schritt">
+                <strong>Schritt 1:</strong> Hole den Wert aus dem Input-Feld
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 2:</strong> Prüfe ob der Input nicht leer ist
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 3:</strong> Verwende <code>.catch()</code> für Error-Handling
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 4:</strong> Prüfe <code>response.ok</code> und verwende <code>throw new Error()</code>
+            </div>
+            
+            <div class="schritt">
+                <strong>Schritt 5:</strong> Teste mit funktionierenden und nicht-funktionierenden Namen!
+            </div>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was du wissen musst:</h3>
+            <p><strong>.catch():</strong> Fängt Fehler ab, wenn etwas schiefgeht</p>
+            <p><strong>response.ok:</strong> Prüft ob die API-Antwort erfolgreich war</p>
+            <p><strong>throw new Error():</strong> Wirft einen Fehler, der von .catch() gefangen wird</p>
+            <p><strong>Enter-Taste:</strong> Wird über einen Event-Listener unterstützt</p>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="Pokémon-Name oder ID eingeben (z.B. pikachu oder 25)">
+            <button onclick="searchPokemon()" class="search-button">🔍 Pokémon suchen</button>
+        </div>
+
+        <div class="examples">
+            <h3>💡 Beispiele zum Testen:</h3>
+            <p><strong>Funktioniert:</strong> pikachu, 25, charizard, 6, bulbasaur, 1</p>
+            <p><strong>Fehler:</strong> xyz, 99999, gibtnicht</p>
+        </div>
+
+        <div class="todo">
+            <strong>TODO:</strong> Vervollständige die searchPokemon() Funktion mit Error-Handling!
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            Pokémon nicht gefunden! Überprüfe die Schreibweise oder versuche es mit einer anderen ID.
+        </div>
+
+        <div id="pokemonCard" class="pokemon-card">
+            <div class="pokemon-header">
+                <div class="pokemon-image">
+                    <img id="pokemonSprite" src="" alt="Pokémon Bild">
+                </div>
+                <div class="pokemon-name" id="pokemonName">-</div>
+            </div>
+            
+            <div class="pokemon-info">
+                <div class="info-item">
+                    <span class="info-label">ID</span>
+                    <div class="info-value" id="pokemonId">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Größe</span>
+                    <div class="info-value" id="pokemonHeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gewicht</span>
+                    <div class="info-value" id="pokemonWeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Erfahrung</span>
+                    <div class="info-value" id="pokemonExp">-</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="5-loesung.html" class="loesung-link">🔍 Zur Lösung</a>
+    </main>
+
+    <script>
+        // Event-Listener für Enter-Taste ist bereits fertig
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPokemon();
+            }
+        });
+
+        // 🎯 DEINE HAUPTAUFGABE: Vervollständige diese Funktion!
+        function searchPokemon() {
+            // TODO 1: Input-Wert holen und bereinigen
+            const input = document.getElementById('searchInput');
+            const pokemonName = input.value.___HIER_BEREINIGEN___.___HIER_BEREINIGEN___();
+            
+            // TODO 2: Prüfen ob Input leer ist
+            if (!pokemonName) {
+                showError('Bitte gib einen Pokémon-Namen oder eine ID ein!');
+                return; // Funktion beenden
+            }
+            
+            console.log('🔍 Suche nach:', pokemonName);
+            
+            // Anzeigen zurücksetzen (bereits fertig)
+            hideError();
+            hidePokemonCard();
+            
+            // TODO 3: Fetch mit Error-Handling
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+                .then(response => {
+                    console.log('📡 Antwort erhalten:', response.status);
+                    
+                    // TODO 4: WICHTIG! Prüfen ob Antwort ok ist
+                    if (!response.___HIER_OK_PROPERTY___) {
+                        // TODO 5: Fehler werfen wenn nicht gefunden
+                        throw new ___HIER_ERROR_CLASS___('Not found');
+                    }
+                    
+                    // TODO 6: JSON zurückgeben
+                    return response.___HIER_JSON_METHOD___;
+                })
+                .then(pokemon => {
+                    console.log('✅ Pokémon gefunden:', pokemon.name);
+                    // TODO 7: Pokémon anzeigen (Funktion ist vorbereitet)
+                    ___HIER_DISPLAY_FUNKTION___(pokemon);
+                })
+                // TODO 8: WICHTIG! Catch-Block hinzufügen
+                .___HIER_CATCH_METHOD___(error => {
+                    // Dieser Block wird bei Fehlern ausgeführt
+                    console.log('❌ Fehler aufgetreten:', error);
+                    // TODO 9: Fehlermeldung anzeigen
+                    ___HIER_ERROR_FUNKTION___('Pokémon nicht gefunden! Überprüfe die Schreibweise oder versuche es mit einer anderen ID.');
+                });
+        }
+        
+        // Diese Funktionen sind bereits fertig - du musst sie nur aufrufen
+        function displayPokemon(pokemon) {
+            document.getElementById('pokemonName').textContent = pokemon.name;
+            document.getElementById('pokemonId').textContent = '#' + pokemon.id;
+            document.getElementById('pokemonHeight').textContent = (pokemon.height / 10) + 'm';
+            document.getElementById('pokemonWeight').textContent = (pokemon.weight / 10) + 'kg';
+            document.getElementById('pokemonExp').textContent = pokemon.base_experience + ' XP';
+            
+            const sprite = document.getElementById('pokemonSprite');
+            sprite.src = pokemon.sprites.front_default;
+            sprite.alt = pokemon.name + ' Sprite';
+            
+            showPokemonCard();
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            setTimeout(() => { hideError(); }, 3000);
+        }
+        
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        function showPokemonCard() {
+            document.getElementById('pokemonCard').classList.add('show');
+        }
+        
+        function hidePokemonCard() {
+            document.getElementById('pokemonCard').classList.remove('show');
+        }
+        
+        // 🎓 LERNZIEL: Nach dieser Übung verstehst du:
+        // - Wie man Benutzereingaben verarbeitet und validiert
+        // - Wie man mit .catch() Fehler abfängt
+        // - Wie man response.ok und throw new Error() verwendet
+        // - Wie man nutzerfreundliche Fehlermeldungen anzeigt
+        // - Wie man Event-Listener für Tastatur-Events verwendet
+    </script>
+</body>
+</html>

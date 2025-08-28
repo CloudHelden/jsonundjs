@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="pokedex">
+        <div class="pokedex-top">
+            <div class="big-light"></div>
+            <div class="small-lights">
+                <div class="small-light red"></div>
+                <div class="small-light yellow"></div>
+                <div class="small-light green"></div>
+            </div>
+        </div>
+        
+        <div class="pokedex-body">
+            <div class="screen-container">
+                <div class="screen">
+                    <div id="loading" class="loading-message" style="display: none;">LADE...</div>
+                    <div id="error" class="error-message" style="display: none;"></div>
+                    <div id="pokemonResult" class="pokemon-display" style="display: none;"></div>
+                    <div id="defaultScreen" class="pokemon-display">
+                        <div style="color: #0ff; font-size: 18px; margin-bottom: 15px;">POKÉDX v2.0</div>
+                        <div style="color: #666; font-size: 13px;">Pokémon-Name oder ID eingeben</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <input type="text" id="pokemonSearch" class="search-input" placeholder="Pokémon-Name oder ID eingeben...">
+                <button onclick="searchPokemon()" class="search-button">SUCHEN</button>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="control-button">A</button>
+                <button class="control-button">B</button>
+                <button class="control-button">SELECT</button>
+                <button class="control-button">START</button>
+            </div>
+        </div>
+        
+        <div class="d-pad"></div>
+        <div class="speaker">
+            <div class="speaker-line"></div>
+            <div class="speaker-line"></div>
+            <div class="speaker-line"></div>
+            <div class="speaker-line"></div>
+        </div>
+    </div>
+
+    <script>
+        function searchPokemon() {
+            const searchInput = document.getElementById('pokemonSearch');
+            const pokemonName = searchInput.value.toLowerCase().trim();
+            
+            if (!pokemonName) {
+                showError('Bitte gib einen Pokémon-Namen oder eine ID ein.');
+                return;
+            }
+            
+            hideError();
+            hidePokemonInfo();
+            
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Not found');
+                    }
+                    return response.json();
+                })
+                .then(pokemon => {
+                    displayPokemon(pokemon);
+                })
+                .catch(error => {
+                    showError('Pokémon nicht gefunden. Überprüfe die Schreibweise oder versuche es mit einer anderen ID.');
+                });
+        }
+        
+        function displayPokemon(pokemon) {
+            const resultDiv = document.getElementById('pokemonResult');
+            const defaultScreen = document.getElementById('defaultScreen');
+            
+            const typeColors = {
+                normal: '#A8A878',
+                fire: '#F08030',
+                water: '#6890F0',
+                electric: '#F8D030',
+                grass: '#78C850',
+                ice: '#98D8D8',
+                fighting: '#C03028',
+                poison: '#A040A0',
+                ground: '#E0C068',
+                flying: '#A890F0',
+                psychic: '#F85888',
+                bug: '#A8B820',
+                rock: '#B8A038',
+                ghost: '#705898',
+                dragon: '#7038F8',
+                dark: '#705848',
+                steel: '#B8B8D0',
+                fairy: '#EE99AC'
+            };
+            
+            const typeBadges = pokemon.types.map(typeInfo => {
+                const typeName = typeInfo.type.name;
+                const color = typeColors[typeName] || '#68A090';
+                return `<span class="type-badge" style="background-color: ${color}">${typeName}</span>`;
+            }).join('');
+            
+            resultDiv.innerHTML = `
+                <div class="pokemon-name">${pokemon.name}</div>
+                <div class="pokemon-image">
+                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                </div>
+                <div class="pokemon-stats">
+                    <div class="pokemon-stat-row">
+                        <span class="stat-label">ID:</span>
+                        <span class="stat-value">#${pokemon.id}</span>
+                    </div>
+                    <div class="pokemon-stat-row">
+                        <span class="stat-label">GRÖSSE:</span>
+                        <span class="stat-value">${pokemon.height / 10}m</span>
+                    </div>
+                    <div class="pokemon-stat-row">
+                        <span class="stat-label">GEWICHT:</span>
+                        <span class="stat-value">${pokemon.weight / 10}kg</span>
+                    </div>
+                    <div class="pokemon-stat-row">
+                        <span class="stat-label">TYP:</span>
+                        <div class="pokemon-types">${typeBadges}</div>
+                    </div>
+                    <div class="pokemon-stat-row">
+                        <span class="stat-label">ERF:</span>
+                        <span class="stat-value">${pokemon.base_experience}</span>
+                    </div>
+                </div>
+            `;
+            
+            defaultScreen.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+        
+        function showLoading() {
+            const loading = document.getElementById('loading');
+            const defaultScreen = document.getElementById('defaultScreen');
+            const pokemonResult = document.getElementById('pokemonResult');
+            const error = document.getElementById('error');
+            
+            defaultScreen.style.display = 'none';
+            pokemonResult.style.display = 'none';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            const defaultScreen = document.getElementById('defaultScreen');
+            const pokemonResult = document.getElementById('pokemonResult');
+            
+            defaultScreen.style.display = 'none';
+            pokemonResult.style.display = 'none';
+            errorDiv.textContent = `ERROR: ${message}`;
+            errorDiv.style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        function hidePokemonInfo() {
+            document.getElementById('pokemonResult').style.display = 'none';
+        }
+        
+        // Enter-Taste zum Suchen
+        document.getElementById('pokemonSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPokemon();
+            }
+        });
+    </script>
+</body>
+</html>

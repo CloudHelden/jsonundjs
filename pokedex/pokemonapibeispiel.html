@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PokeAPI Inline + Console Demo</title>
+</head>
+<body>
+  <h1>PokeAPI Fetch Demo</h1>
+  <div id="pokemon"></div>
+
+  <script>
+    fetch("https://pokeapi.co/api/v2/pokemon/ditto") // Pokémon mit ID 4 (Charmander)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("HTTP-Error: " + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Werte aus der API
+        const name = data.name;
+        const height = data.height;
+        const weight = data.weight;
+        const baseExp = data.base_experience;
+        const sprite = data.sprites.front_default;
+
+        // Console Logs
+        console.log("===== Pokemon Info =====");
+        console.log("Name:", name);
+        console.log("Größe:", height);
+        console.log("Gewicht:", weight);
+        console.log("Basis-Erfahrung:", baseExp);
+        console.log("Sprite URL:", sprite);
+        console.log("Komplette API-Antwort:", data);
+
+        // In HTML einfügen
+        document.getElementById("pokemon").innerHTML = `
+          <h2>${name.charAt(0).toUpperCase() + name.slice(1)}</h2>
+          <ul>
+            <li><strong>Größe:</strong> hey Markus${data.height}</li>
+            <li><strong>Gewicht:</strong> ${weight}</li>
+            <li><strong>Basis-Erfahrung:</strong> ${baseExp}</li>
+          </ul>
+          <img src="${sprite}" alt="${name} Sprite">
+        `;
+      })
+      .catch(error => {
+        console.error("Fetch error:", error);
+        document.getElementById("pokemon").innerHTML =
+          "<p style='color:red'>Fehler: " + error.message + "</p>";
+      });
+  </script>
+</body>
+</html>

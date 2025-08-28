@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übung 6: Erweiterte Pokédex-Features</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #dc143c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .aufgabe {
+            background: #f8f9fa;
+            border-left: 5px solid #dc143c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .aufgabe h2 {
+            color: #dc143c;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .aufgabe p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .aufgabe ul {
+            margin-left: 20px;
+        }
+
+        .aufgabe li {
+            margin-bottom: 5px;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #dc143c;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #dc143c;
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.2);
+        }
+
+        .search-button {
+            width: 100%;
+            background: linear-gradient(145deg, #dc143c, #b91c3c);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(220, 20, 60, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .pokemon-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 3px solid #dc143c;
+            display: none;
+        }
+
+        .pokemon-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pokemon-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .pokemon-image {
+            background: radial-gradient(circle, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 3px solid #dc143c;
+        }
+
+        .pokemon-image img {
+            width: 150px;
+            height: 150px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+        }
+
+        .pokemon-name {
+            font-size: 2.5em;
+            color: #dc143c;
+            font-weight: bold;
+            text-transform: capitalize;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pokemon-types {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .type-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .pokemon-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #dc143c;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .abilities-section {
+            margin: 25px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .abilities-title {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .abilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ability-badge {
+            background: linear-gradient(145deg, #6c757d, #5a6268);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            text-transform: capitalize;
+        }
+
+        .error-message {
+            background: linear-gradient(145deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.2em;
+            color: #666;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        .hinweis {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .hinweis h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .examples {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .examples h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .examples p {
+            color: #856404;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>⚡ Übung 6: Erweiterte Pokédex-Features</h1>
+        
+        <div class="aufgabe">
+            <h2>📋 Aufgabe</h2>
+            <p>Erweitere den Pokédex um weitere wichtige Informationen:</p>
+            <ul>
+                <li>Zeige Pokémon-Typen an (z.B. Feuer, Wasser, Elektro)</li>
+                <li>Füge Fähigkeiten (Abilities) hinzu</li>
+                <li>Verbessere das Error-Handling mit Loading-Anzeige</li>
+                <li>Enter-Taste Unterstützung für bessere Benutzerfreundlichkeit</li>
+                <li>Mehr Pokémon-Statistiken anzeigen</li>
+            </ul>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input" placeholder="Pokémon-Name oder ID eingeben (z.B. charizard, pikachu, 150)">
+            <button onclick="searchPokemon()" class="search-button">Erweiterte Suche</button>
+        </div>
+
+        <div class="examples">
+            <h3>🎯 Empfohlene Test-Pokémon:</h3>
+            <p><strong>Mit mehreren Typen:</strong> charizard (Feuer/Flug), gyarados (Wasser/Flug), garchomp (Drache/Boden)</p>
+            <p><strong>Legendäre:</strong> mewtwo (150), mew (151), rayquaza (384)</p>
+        </div>
+
+        <div id="loading" class="loading">
+            Lade Pokémon-Daten
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            Pokémon nicht gefunden! Überprüfe die Schreibweise oder versuche es mit einer anderen ID.
+        </div>
+
+        <div id="pokemonCard" class="pokemon-card">
+            <div class="pokemon-header">
+                <div class="pokemon-image">
+                    <img id="pokemonSprite" src="" alt="Pokémon Bild">
+                </div>
+                <div class="pokemon-name" id="pokemonName">-</div>
+            </div>
+            
+            <div id="pokemonTypes" class="pokemon-types">
+                <!-- Typ-Badges werden hier eingefügt -->
+            </div>
+
+            <div class="abilities-section">
+                <div class="abilities-title">Fähigkeiten:</div>
+                <div id="pokemonAbilities" class="abilities-list">
+                    <!-- Fähigkeiten werden hier eingefügt -->
+                </div>
+            </div>
+            
+            <div class="pokemon-info">
+                <div class="info-item">
+                    <span class="info-label">ID</span>
+                    <div class="info-value" id="pokemonId">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Größe</span>
+                    <div class="info-value" id="pokemonHeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Gewicht</span>
+                    <div class="info-value" id="pokemonWeight">-</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Basis-Erfahrung</span>
+                    <div class="info-value" id="pokemonExp">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hinweis">
+            <h3>💡 Was ist neu?</h3>
+            <p>Jetzt nutzen wir <code>pokemon.types</code> für die Typ-Anzeige und <code>pokemon.abilities</code> für die Fähigkeiten. Außerdem haben wir eine Loading-Anzeige und bessere Benutzerinteraktion hinzugefügt.</p>
+        </div>
+
+        <div class="hinweis">
+            <h3>🔍 Nächste Schritte</h3>
+            <p>In der finalen Übung 7 werden wir die Typen mit passenden Farben versehen und den Pokédex perfekt machen!</p>
+        </div>
+
+        <a href="6-aufgabe.html" class="loesung-link" style="background: #6c757d;">🔙 Zurück zur Aufgabe</a>
+    </main>
+
+    <script>
+        // Typ-Farben (werden in Übung 7 verwendet)
+        const typeColors = {
+            normal: '#A8A878',
+            fire: '#F08030',
+            water: '#6890F0',
+            electric: '#F8D030',
+            grass: '#78C850',
+            ice: '#98D8D8',
+            fighting: '#C03028',
+            poison: '#A040A0',
+            ground: '#E0C068',
+            flying: '#A890F0',
+            psychic: '#F85888',
+            bug: '#A8B820',
+            rock: '#B8A038',
+            ghost: '#705898',
+            dragon: '#7038F8',
+            dark: '#705848',
+            steel: '#B8B8D0',
+            fairy: '#EE99AC'
+        };
+
+        // Event-Listener für Enter-Taste
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPokemon();
+            }
+        });
+
+        // Hauptfunktion zum Suchen eines Pokémons
+        function searchPokemon() {
+            const input = document.getElementById('searchInput');
+            const pokemonName = input.value.toLowerCase().trim();
+            
+            if (!pokemonName) {
+                showError('Bitte gib einen Pokémon-Namen oder eine ID ein!');
+                return;
+            }
+            
+            console.log('🔍 Erweiterte Suche nach:', pokemonName);
+            
+            // Alle Anzeigen zurücksetzen und Loading anzeigen
+            hideError();
+            hidePokemonCard();
+            showLoading();
+            
+            // API-Aufruf mit verbessertem Error-Handling
+            fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
+                .then(response => {
+                    console.log('📡 Antwort erhalten:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    return response.json();
+                })
+                .then(pokemon => {
+                    console.log('✅ Pokémon mit Details gefunden:', pokemon.name);
+                    displayPokemonExtended(pokemon);
+                })
+                .catch(error => {
+                    console.log('❌ Erweiterte Suche Fehler:', error);
+                    showError('Pokémon nicht gefunden! Überprüfe die Schreibweise oder versuche es mit einer anderen ID.');
+                })
+                .finally(() => {
+                    // Loading immer verstecken, egal ob Erfolg oder Fehler
+                    hideLoading();
+                });
+        }
+        
+        // Pokémon mit erweiterten Daten anzeigen
+        function displayPokemonExtended(pokemon) {
+            // Grunddaten setzen
+            document.getElementById('pokemonName').textContent = pokemon.name;
+            document.getElementById('pokemonId').textContent = '#' + pokemon.id;
+            document.getElementById('pokemonHeight').textContent = (pokemon.height / 10) + 'm';
+            document.getElementById('pokemonWeight').textContent = (pokemon.weight / 10) + 'kg';
+            document.getElementById('pokemonExp').textContent = pokemon.base_experience + ' XP';
+            
+            // Pokémon-Bild setzen
+            const sprite = document.getElementById('pokemonSprite');
+            sprite.src = pokemon.sprites.front_default;
+            sprite.alt = pokemon.name + ' Sprite';
+            
+            // Typen anzeigen
+            displayTypes(pokemon.types);
+            
+            // Fähigkeiten anzeigen
+            displayAbilities(pokemon.abilities);
+            
+            // Karte anzeigen
+            showPokemonCard();
+            
+            console.log('📊 Erweiterte Daten angezeigt');
+        }
+        
+        // Typen anzeigen (noch ohne Farben - kommt in Übung 7)
+        function displayTypes(types) {
+            const typesContainer = document.getElementById('pokemonTypes');
+            
+            // Typ-Badges erstellen
+            const typeBadges = types.map(typeInfo => {
+                const typeName = typeInfo.type.name;
+                return `<div class="type-badge" style="background: #666">${typeName}</div>`;
+            }).join('');
+            
+            typesContainer.innerHTML = typeBadges;
+            console.log('🏷️ Typen angezeigt:', types.map(t => t.type.name));
+        }
+        
+        // Fähigkeiten anzeigen
+        function displayAbilities(abilities) {
+            const abilitiesContainer = document.getElementById('pokemonAbilities');
+            
+            // Fähigkeits-Badges erstellen
+            const abilityBadges = abilities.map(abilityInfo => {
+                const abilityName = abilityInfo.ability.name;
+                const isHidden = abilityInfo.is_hidden ? ' (versteckt)' : '';
+                return `<div class="ability-badge">${abilityName}${isHidden}</div>`;
+            }).join('');
+            
+            abilitiesContainer.innerHTML = abilityBadges;
+            console.log('💪 Fähigkeiten angezeigt:', abilities.map(a => a.ability.name));
+        }
+        
+        // Loading anzeigen
+        function showLoading() {
+            document.getElementById('loading').classList.add('show');
+        }
+        
+        // Loading verstecken
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('show');
+        }
+        
+        // Fehlermeldung anzeigen
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                hideError();
+            }, 4000);
+        }
+        
+        // Fehlermeldung verstecken
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        // Pokémon-Karte anzeigen
+        function showPokemonCard() {
+            document.getElementById('pokemonCard').classList.add('show');
+        }
+        
+        // Pokémon-Karte verstecken
+        function hidePokemonCard() {
+            document.getElementById('pokemonCard').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

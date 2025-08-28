@@ -1,0 +1,8 @@
+const product = { title: 'OpenAPI Kurs', price: 150.34 };
+fetch('https://fakestoreapi.com/products', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(product)
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
